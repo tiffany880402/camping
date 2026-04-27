@@ -1,0 +1,13 @@
+{
+  "name": "露營誌 (Camping Card)",
+  "description": "以卡片形式紀錄每一次露營體驗、管理裝備與追蹤開銷的行動 App。",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Data management",
+    "Expense tracking",
+    "Photo library",
+    "Location tracking"
+  ]
+}
