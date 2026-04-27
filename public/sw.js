@@ -1,9 +1,27 @@
-const CACHE_NAME = 'camping-log-v1';
+const CACHE_NAME = 'camping-log-v2';
+const ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/src/main.tsx',
+  '/src/App.tsx',
+  '/src/index.css'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(['/']);
+      return cache.addAll(ASSETS);
+    })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
     })
   );
 });
