@@ -45,7 +45,7 @@ const BottomNav = () => {
   const location = useLocation();
 
   const tabs = [
-    { id: 'record', icon: Calendar, label: '記錄', path: '/' },
+    { id: 'record', icon: Home, label: '首頁', path: '/' },
     { id: 'gear', icon: Package, label: '裝備', path: '/gear' },
     { id: 'stats', icon: BarChart2, label: '統計', path: '/stats' },
     { id: 'settings', icon: User, label: '個人', path: '/settings' },
@@ -288,7 +288,7 @@ const DEFAULT_GEAR_LIST = [
   { id: 'dg69', name: '露營小旗子', assignee: '我', isCompleted: false },
 ];
 
-const DashboardPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[], onAddTrip: (trip: CampingTrip) => void, onDeleteTrip: (id: string) => void }) => {
+const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[], onAddTrip: (trip: CampingTrip) => void, onDeleteTrip: (id: string) => void }) => {
   const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -1796,6 +1796,31 @@ const SettingsPage = () => {
           <ChevronRight className="text-stone-300 group-hover:text-morandi-400 transition-colors" size={16} />
         </div>
 
+        <div className="p-5 glass-light rounded-[24px] border border-stone-100 flex flex-col gap-4">
+          <div className="flex items-center justify-between group cursor-pointer">
+             <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-morandi-50 rounded-xl flex items-center justify-center text-morandi-600">
+                  <Package size={18} />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-stone-800">PWA 安裝教學</p>
+                  <p className="text-[10px] text-stone-400">將日誌設為桌面 App</p>
+                </div>
+             </div>
+             <ChevronRight className="text-stone-300" size={16} />
+          </div>
+          <div className="bg-stone-50 p-4 rounded-2xl space-y-3">
+             <div className="flex gap-3">
+                <div className="bg-white px-2 py-1 rounded-md text-[9px] font-black text-morandi-600 shadow-sm h-fit">iOS</div>
+                <p className="text-[10px] text-stone-500 leading-relaxed">點擊 Safari 底部的 <span className="font-bold">「分享」</span> 按鈕，下滑找到 <span className="font-bold text-stone-800">「加入主畫面」</span> 即可。</p>
+             </div>
+             <div className="flex gap-3 pt-2 border-t border-stone-200/50">
+                <div className="bg-white px-2 py-1 rounded-md text-[9px] font-black text-stone-600 shadow-sm h-fit">Android</div>
+                <p className="text-[10px] text-stone-500 leading-relaxed">點擊瀏覽器右上角選單，選擇 <span className="font-bold text-stone-800">「安裝應用程式」</span>。</p>
+             </div>
+          </div>
+        </div>
+
         <div className="p-4 bg-stone-900/5 rounded-[20px] flex items-center justify-between mt-6 hover:bg-red-50/50 transition-colors cursor-pointer group">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-red-400 shadow-sm">
@@ -1848,7 +1873,7 @@ export default function App() {
         <BackgroundMesh />
         <AnimatePresence mode="wait">
           <Routes>
-            <Route path="/" element={<DashboardPage trips={trips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
+            <Route path="/" element={<CampingPage trips={trips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
             <Route path="/trip/:id" element={<TripDetailPage trips={trips} onUpdateTrip={handleUpdateTrip} onDeleteTrip={handleDeleteTrip} />} />
             <Route path="/gear" element={<GearPage trips={trips} />} />
             <Route path="/stats" element={<StatsPage trips={trips} />} />
