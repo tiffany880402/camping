@@ -1796,6 +1796,31 @@ const SettingsPage = () => {
           <ChevronRight className="text-stone-300 group-hover:text-morandi-400 transition-colors" size={16} />
         </div>
 
+        <div className="p-5 glass-light rounded-[24px] border border-stone-100 flex flex-col gap-4">
+          <div className="flex items-center justify-between group cursor-pointer">
+             <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-morandi-50 rounded-xl flex items-center justify-center text-morandi-600">
+                  <Package size={18} />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-stone-800">PWA 安裝教學</p>
+                  <p className="text-[10px] text-stone-400">將日誌設為桌面 App</p>
+                </div>
+             </div>
+             <ChevronRight className="text-stone-300" size={16} />
+          </div>
+          <div className="bg-stone-50 p-4 rounded-2xl space-y-3">
+             <div className="flex gap-3">
+                <div className="bg-white px-2 py-1 rounded-md text-[9px] font-black text-morandi-600 shadow-sm h-fit">iOS</div>
+                <p className="text-[10px] text-stone-500 leading-relaxed">點擊 Safari 底部的 <span className="font-bold">「分享」</span> 按鈕，下滑找到 <span className="font-bold text-stone-800">「加入主畫面」</span> 即可。</p>
+             </div>
+             <div className="flex gap-3 pt-2 border-t border-stone-200/50">
+                <div className="bg-white px-2 py-1 rounded-md text-[9px] font-black text-stone-600 shadow-sm h-fit">Android</div>
+                <p className="text-[10px] text-stone-500 leading-relaxed">點擊瀏覽器右上角選單，選擇 <span className="font-bold text-stone-800">「安裝應用程式」</span>。</p>
+             </div>
+          </div>
+        </div>
+
         <div className="p-4 bg-stone-900/5 rounded-[20px] flex items-center justify-between mt-6 hover:bg-red-50/50 transition-colors cursor-pointer group">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-red-400 shadow-sm">
