@@ -45,7 +45,7 @@ const BottomNav = () => {
   const location = useLocation();
 
   const tabs = [
-    { id: 'record', icon: Home, label: '首頁', path: '/' },
+    { id: 'record', icon: Home, label: '首頁', path: '/camping' },
     { id: 'gear', icon: Package, label: '裝備', path: '/gear' },
     { id: 'stats', icon: BarChart2, label: '統計', path: '/stats' },
     { id: 'settings', icon: User, label: '個人', path: '/settings' },
