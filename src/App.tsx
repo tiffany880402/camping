@@ -55,25 +55,27 @@ const BottomNav = () => {
     <div className="fixed bottom-6 left-0 right-0 z-50 px-4">
       <nav className="max-w-xs mx-auto glass rounded-full shadow-2xl p-1.5 flex justify-between items-center bg-white/80 border-white/40">
         {tabs.map((tab) => {
-          const isActive = location.pathname === tab.path;
+          const isActive = tab.id === 'record' 
+            ? (location.pathname === '/' || location.pathname.startsWith('/trip'))
+            : location.pathname === tab.path;
           return (
             <button
               key={tab.id}
               onClick={() => navigate(tab.path)}
               className={cn(
                 "relative flex-1 flex flex-col items-center gap-1 py-2.5 transition-all outline-none",
-                isActive ? "text-stone-800" : "text-stone-400"
+                isActive ? "text-morandi-700" : "text-stone-400 hover:text-stone-500"
               )}
             >
               {isActive && (
                 <motion.div 
                   layoutId="activePill"
-                  className="absolute inset-0 bg-morandi-100/60 rounded-full -z-10"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  className="absolute inset-x-1.5 inset-y-1.5 bg-morandi-50 rounded-full -z-10"
+                  transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                 />
               )}
-              <tab.icon size={20} className={isActive ? "text-morandi-600" : "text-stone-500"} />
-              <span className={cn("text-[9px] font-bold tracking-wider", isActive ? "text-stone-800" : "text-stone-600")}>
+              <tab.icon size={20} className={isActive ? "text-morandi-600 scale-110" : "text-stone-400"} />
+              <span className={cn("text-[9px] font-black tracking-widest uppercase", isActive ? "text-morandi-900" : "text-stone-500 opacity-60")}>
                 {tab.label}
               </span>
             </button>
