@@ -29,7 +29,6 @@ import {
 import { cn, formatCurrency } from './lib/utils';
 import { MOCK_TRIPS } from './constants';
 import { CampingTrip, GearItem } from './types';
-import { saveRecordToFirebase, subscribeToLogs } from './lib/firebase';
 
 // --- Utilities ---
 
@@ -412,14 +411,6 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
       };
 
       onAddTrip(newTrip);
-      
-      // 呼叫 Firebase 儲存功能
-      try {
-        await saveRecordToFirebase(newTrip);
-        alert("紀錄已成功同步至雲端，朋友也會看到喔！");
-      } catch (e) {
-        console.error("Firebase save error:", e);
-      }
       
       setIsAddModalOpen(false);
       // Reset form
@@ -1926,27 +1917,6 @@ export default function App() {
   useEffect(() => {
     safeLocalStorageSetItem('camping_trips', JSON.stringify(trips));
   }, [trips]);
-
-  useEffect(() => {
-    // 監聽 Firebase 雲端更新
-    const unsubscribe = subscribeToLogs((records) => {
-      if (records && records.length > 0) {
-        // 合併邏輯：Firebase 資料優先，並與本地資料去重 (以 id 為主)
-        setTrips(prev => {
-          const tripMap = new Map();
-          // 先放本地資料 (做為保底)
-          prev.forEach(t => tripMap.set(t.id, t));
-          // 再放 Firebase 資料 (覆蓋或新增)
-          records.forEach(t => tripMap.set(t.id, t));
-          return Array.from(tripMap.values()).sort((a, b) => 
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
-        });
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleAddTrip = (newTrip: CampingTrip) => {
     setTrips(prev => [newTrip, ...prev]);
