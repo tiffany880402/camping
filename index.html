@@ -40,6 +40,58 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      // 你的專案配置
+      const firebaseConfig = {
+        apiKey: "AIzaSyCEjYyMwJ_jvl-bODjkxzB6zLf4IdBD0Q0",
+        authDomain: "camping-cc5b3.firebaseapp.com",
+        projectId: "camping-cc5b3",
+        storageBucket: "camping-cc5b3.firebasestorage.app",
+        messagingSenderId: "464910585690",
+        appId: "1:464910585690:web:10185a6585c584956a2d63"
+      };
+
+      // 初始化 Firebase 與資料庫
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // --- 功能 A：把紀錄傳送到雲端 ---
+      window.saveRecordToFirebase = async (recordData) => {
+        try {
+          // 將資料存入名為 'logs' 的集合
+          await addDoc(collection(db, "logs"), {
+            ...recordData,
+            createdAt: serverTimestamp() // 使用 Firebase Server Timestamp
+          });
+          console.log("資料已成功上傳雲端！");
+        } catch (e) {
+          console.error("上傳失敗: ", e);
+        }
+      };
+
+      // --- 功能 B：監聽雲端資料 (朋友更新你也會動) ---
+      const q = query(collection(db, "logs"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+        const records = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          // 將 Firebase Timestamp 轉回 Date 或字串格式以配合 React State
+          if (data.createdAt && data.createdAt.toDate) {
+             data.createdAt = data.createdAt.toDate().toISOString();
+          }
+          records.push(data);
+        });
+        
+        // 呼叫 React 曝露出來的更新函式
+        if (window.updateUIRecords) {
+          window.updateUIRecords(records);
+        }
+        console.log("偵測到雲端更新，目前共有 " + records.length + " 筆資料");
+      });
+    </script>
   </body>
 </html>
 

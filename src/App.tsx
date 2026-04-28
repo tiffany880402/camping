@@ -30,6 +30,13 @@ import { cn, formatCurrency } from './lib/utils';
 import { MOCK_TRIPS } from './constants';
 import { CampingTrip, GearItem } from './types';
 
+declare global {
+  interface Window {
+    saveRecordToFirebase: (recordData: any) => Promise<void>;
+    updateUIRecords: (records: any[]) => void;
+  }
+}
+
 // --- Utilities ---
 
 const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800): Promise<string> => {
@@ -411,6 +418,12 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
       };
 
       onAddTrip(newTrip);
+      
+      // 呼叫 Firebase 儲存功能
+      if (window.saveRecordToFirebase) {
+        await window.saveRecordToFirebase(newTrip);
+        alert("紀錄已成功同步至雲端，朋友也會看到喔！");
+      }
       
       setIsAddModalOpen(false);
       // Reset form
@@ -1917,6 +1930,20 @@ export default function App() {
   useEffect(() => {
     safeLocalStorageSetItem('camping_trips', JSON.stringify(trips));
   }, [trips]);
+
+  useEffect(() => {
+    // 曝露給 Firebase 監聽器使用的更新函式
+    window.updateUIRecords = (records: any[]) => {
+      // 這裡可以決定要完全取代還是合併。
+      // 照理說 Firebase 應該是 Single Source of Truth，但我們也要考慮本地 MOCK 資料。
+      // 簡單起見，如果 Firebase 有資料就顯示。
+      if (records && records.length > 0) {
+        // 將 Firebase 格式轉回 CampingTrip 格式（如果有需要的話）
+        // 這裡暫時假設格式一致
+        setTrips(records as CampingTrip[]);
+      }
+    };
+  }, []);
 
   const handleAddTrip = (newTrip: CampingTrip) => {
     setTrips(prev => [newTrip, ...prev]);
