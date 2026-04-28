@@ -440,7 +440,7 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
   };
 
   return (
-    <div className="pb-32 pt-12 px-4">
+    <div className="pb-32 pt-[calc(1.5rem+env(safe-area-inset-top))] px-4 md:pt-12">
       <div className="mb-6 px-2">
         <h1 className="text-2xl font-black text-stone-800 tracking-tight">露營日誌</h1>
         <p className="text-stone-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Adventure Log & Gear</p>
@@ -475,7 +475,7 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute top-4 left-4 glass px-3 py-1 bg-white/20 text-white rounded-full text-[10px] font-extrabold tracking-wide sm:tracking-widest">
+              <div className="absolute top-4 left-4 glass px-3 py-1 bg-white/20 text-white rounded-full text-[10px] font-black tracking-tight max-w-[140px] truncate">
                 {trip.date}
               </div>
               <button
@@ -910,23 +910,23 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-20">
+        <div className="absolute top-0 left-0 right-0 p-4 pt-[calc(1rem+env(safe-area-inset-top))] flex justify-between items-center z-20">
           <button 
             onClick={() => navigate(-1)}
-            className="w-10 h-10 glass rounded-full flex items-center justify-center text-stone-800"
+            className="w-10 h-10 glass rounded-full flex items-center justify-center text-stone-800 bg-white/40 backdrop-blur-md"
           >
             <ArrowLeft size={18} />
           </button>
           <div className="flex gap-2">
             <button 
               onClick={() => setIsDeleteModalOpen(true)}
-              className="w-10 h-10 glass rounded-full flex items-center justify-center text-red-500 shadow-xl border border-white"
+              className="w-10 h-10 glass rounded-full flex items-center justify-center text-red-500 shadow-xl border border-white bg-white/40 backdrop-blur-md"
             >
               <Trash2 size={18} />
             </button>
             <button 
               onClick={() => setIsEditModalOpen(true)}
-              className="px-5 py-2 glass rounded-full text-xs font-black text-morandi-700 shadow-xl border border-white"
+              className="px-5 py-2 glass rounded-full text-xs font-black text-morandi-700 shadow-xl border border-white bg-white/40 backdrop-blur-md"
             >
               編輯行程
             </button>
@@ -938,7 +938,7 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
       <div className="px-4 -mt-12 relative z-10">
         <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-               <span className="text-xs font-black text-morandi-600 tracking-wide sm:tracking-widest uppercase">{trip.date}</span>
+               <span className="text-[10px] font-black text-morandi-600 tracking-tight uppercase">{trip.date}</span>
                <div className="flex gap-0.5 ml-2">
                  {[...Array(5)].map((_, i) => (
                    <Star key={i} size={12} fill={i < trip.rating ? "#fef9c3" : "none"} color={i < trip.rating ? "#7c9482" : "#d1d5db"} />
@@ -1583,8 +1583,8 @@ const GearPage = ({ trips }: { trips: CampingTrip[] }) => {
   const completedGearCount = trips.reduce((acc, t) => acc + (t.gearList?.filter(g => g.isCompleted).length || 0), 0);
 
   return (
-    <div className="pb-24 pt-10 px-4">
-      <header className="mb-10">
+    <div className="pb-24 pt-[calc(1.5rem+env(safe-area-inset-top))] px-4 md:pt-10">
+      <header className="mb-10 px-2">
         <h1 className="text-3xl font-black text-stone-800">裝備管理</h1>
         <p className="text-stone-500 text-sm mt-1">按場次分類的戶外清單</p>
       </header>
@@ -1644,7 +1644,7 @@ const StatsPage = ({ trips }: { trips: CampingTrip[] }) => {
     const cities = Array.from(new Set(trips.map(t => t.location.city)));
 
     return (
-      <div className="pb-24 pt-10 px-4">
+      <div className="pb-24 pt-[calc(1.5rem+env(safe-area-inset-top))] px-4 md:pt-10">
         <h1 className="text-3xl font-black text-stone-800 mb-10 px-1">數據洞察</h1>
 
         <div className="space-y-6">
@@ -1768,7 +1768,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="pb-24 pt-10 px-4">
+    <div className="pb-24 pt-[calc(1.5rem+env(safe-area-inset-top))] px-4 md:pt-10">
       <header className="mb-10 text-center">
         <h1 className="text-3xl font-black text-stone-800">個人檔案</h1>
         <p className="text-stone-500 text-sm mt-1">使用者基本資料</p>
