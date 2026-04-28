@@ -24,7 +24,9 @@ import {
   Circle,
   Edit2,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Tent,
+  Wallet
 } from 'lucide-react';
 import { cn, formatCurrency } from './lib/utils';
 import { MOCK_TRIPS } from './constants';
@@ -445,9 +447,7 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
       </div>
       <div className="flex justify-between items-center mb-6 px-2">
         <div className="w-10 h-10 bg-morandi-600 rounded-[20px] flex items-center justify-center shadow-lg shadow-morandi-600/20">
-          <div className="w-4 h-4 border-2 border-white rounded-sm rotate-45 flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-          </div>
+          <Tent size={20} className="text-white" />
         </div>
         <button 
           onClick={() => setIsAddModalOpen(true)}
@@ -498,7 +498,7 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
             <div className="p-4 flex justify-between items-center bg-white/60">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-morandi-50 flex items-center justify-center">
-                   <Landmark size={18} className="text-morandi-600" />
+                   <Wallet size={18} className="text-morandi-600" />
                 </div>
                 <div>
                    <p className="text-[9px] text-stone-400 font-black uppercase tracking-widest">總支出</p>
