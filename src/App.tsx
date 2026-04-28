@@ -1930,6 +1930,10 @@ export default function App() {
     setTrips(prev => prev.filter(t => t.id !== tripId));
   };
 
+  const sortedTrips = React.useMemo(() => {
+    return [...trips].sort((a, b) => b.date.localeCompare(a.date));
+  }, [trips]);
+
   const basename = window.location.hostname.includes('github.io') ? '/camping' : '/';
 
   return (
@@ -1938,9 +1942,9 @@ export default function App() {
       <div className="max-w-md mx-auto min-h-screen relative selection:bg-morandi-100 selection:text-morandi-900 border-x border-stone-200/20 shadow-2xl bg-white overflow-x-hidden">
         <BackgroundMesh />
         <Routes>
-          <Route path="/" element={<CampingPage trips={trips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
+          <Route path="/" element={<CampingPage trips={sortedTrips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
           <Route path="/trip/:id" element={<TripDetailPage trips={trips} onUpdateTrip={handleUpdateTrip} onDeleteTrip={handleDeleteTrip} />} />
-          <Route path="/gear" element={<GearPage trips={trips} />} />
+          <Route path="/gear" element={<GearPage trips={sortedTrips} />} />
           <Route path="/stats" element={<StatsPage trips={trips} />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
