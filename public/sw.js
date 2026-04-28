@@ -1,16 +1,14 @@
-const CACHE_NAME = 'camping-log-v2';
+const CACHE_NAME = 'camping-log-v3';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/src/main.tsx',
-  '/src/App.tsx',
-  '/src/index.css'
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      // Use cache.addAll with relative paths
       return cache.addAll(ASSETS);
     })
   );

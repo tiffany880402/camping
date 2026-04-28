@@ -924,8 +924,8 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
           {activeTab === 'campus' && (
             <motion.div 
               key="campus"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
                <div className="px-0 grid grid-cols-2 gap-4">
@@ -1081,8 +1081,8 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
           {activeTab === 'gear' && (
             <motion.div 
               key="gear"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
               <div className="flex justify-between items-center px-1">
@@ -1147,8 +1147,8 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
           {activeTab === 'shopping' && (
             <motion.div 
               key="shopping"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
               <div className="flex justify-between items-center px-1">
@@ -1837,6 +1837,20 @@ const SettingsPage = () => {
 
 // --- App Root ---
 
+function PwaHandler() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    const hasRedirected = sessionStorage.getItem('pwa_launch_redirected');
+    
+    if (isStandalone && !hasRedirected) {
+      sessionStorage.setItem('pwa_launch_redirected', 'true');
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
+  return null;
+}
+
 export default function App() {
   const [trips, setTrips] = useState<CampingTrip[]>(() => {
     const saved = localStorage.getItem('camping_trips');
@@ -1867,19 +1881,20 @@ export default function App() {
     setTrips(prev => prev.filter(t => t.id !== tripId));
   };
 
+  const basename = window.location.hostname.includes('github.io') ? '/camping' : '/';
+
   return (
-    <BrowserRouter>
-      <div className="max-w-md mx-auto min-h-screen relative selection:bg-morandi-100 selection:text-morandi-900 border-x border-stone-200/20 shadow-2xl bg-white">
+    <BrowserRouter basename={basename}>
+      <PwaHandler />
+      <div className="max-w-md mx-auto min-h-screen relative selection:bg-morandi-100 selection:text-morandi-900 border-x border-stone-200/20 shadow-2xl bg-white overflow-x-hidden">
         <BackgroundMesh />
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<CampingPage trips={trips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
-            <Route path="/trip/:id" element={<TripDetailPage trips={trips} onUpdateTrip={handleUpdateTrip} onDeleteTrip={handleDeleteTrip} />} />
-            <Route path="/gear" element={<GearPage trips={trips} />} />
-            <Route path="/stats" element={<StatsPage trips={trips} />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={<CampingPage trips={trips} onAddTrip={handleAddTrip} onDeleteTrip={handleDeleteTrip} />} />
+          <Route path="/trip/:id" element={<TripDetailPage trips={trips} onUpdateTrip={handleUpdateTrip} onDeleteTrip={handleDeleteTrip} />} />
+          <Route path="/gear" element={<GearPage trips={trips} />} />
+          <Route path="/stats" element={<StatsPage trips={trips} />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
         <BottomNav />
       </div>
     </BrowserRouter>
