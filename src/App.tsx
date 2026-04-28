@@ -203,7 +203,7 @@ const FormInput = ({ className, ...props }: InputHTMLAttributes<HTMLInputElement
   <input 
     {...props} 
     className={cn(
-      "w-full px-4 py-3 bg-stone-50/50 rounded-[20px] border-2 border-transparent focus:border-morandi-500/20 focus:bg-white outline-none transition-all font-bold text-stone-700 text-sm placeholder:text-stone-300 placeholder:font-medium",
+      "w-full px-4 py-3 bg-stone-50/50 rounded-[20px] border-2 border-transparent focus:border-morandi-500/20 focus:bg-white outline-none transition-all font-bold text-stone-700 text-sm placeholder:text-stone-300 placeholder:font-medium min-w-0",
       className
     )}
   />
@@ -475,7 +475,7 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute top-4 left-4 glass px-3 py-1 bg-white/20 text-white rounded-full text-[10px] font-extrabold tracking-widest">
+              <div className="absolute top-4 left-4 glass px-3 py-1 bg-white/20 text-white rounded-full text-[10px] font-extrabold tracking-wide sm:tracking-widest">
                 {trip.date}
               </div>
               <button
@@ -551,14 +551,14 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
           
           <FormField label="出發日期" icon={Calendar}>
             <div className="relative group/input">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-morandi-400 group-focus-within/input:text-morandi-600 transition-colors pointer-events-none">
+              <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-morandi-400 group-focus-within/input:text-morandi-600 transition-colors pointer-events-none">
                 <Calendar size={18} />
               </div>
               <FormInput 
                 type="date" 
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="pl-12 bg-stone-50/50 border-stone-100 focus:bg-white focus:border-morandi-300 h-14"
+                className="pl-10 sm:pl-12 bg-stone-50/50 border-stone-100 focus:bg-white focus:border-morandi-300 h-14"
               />
             </div>
           </FormField>
@@ -938,8 +938,8 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
       <div className="px-4 -mt-12 relative z-10">
         <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-               <span className="text-xs font-black text-morandi-600 tracking-widest uppercase">{trip.date}</span>
-               <div className="flex gap-0.5">
+               <span className="text-xs font-black text-morandi-600 tracking-wide sm:tracking-widest uppercase">{trip.date}</span>
+               <div className="flex gap-0.5 ml-2">
                  {[...Array(5)].map((_, i) => (
                    <Star key={i} size={12} fill={i < trip.rating ? "#fef9c3" : "none"} color={i < trip.rating ? "#7c9482" : "#d1d5db"} />
                  ))}
@@ -1302,14 +1302,14 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
           
           <FormField label="出發日期" icon={Calendar}>
             <div className="relative group/input">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-morandi-400 group-focus-within/input:text-morandi-600 transition-colors pointer-events-none">
+              <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-morandi-400 group-focus-within/input:text-morandi-600 transition-colors pointer-events-none">
                 <Calendar size={18} />
               </div>
               <FormInput 
                 type="date" 
                 value={editData.date} 
                 onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                className="pl-12 bg-stone-50/50 border-stone-100 focus:bg-white focus:border-morandi-300 h-14"
+                className="pl-10 sm:pl-12 bg-stone-50/50 border-stone-100 focus:bg-white focus:border-morandi-300 h-14"
               />
             </div>
           </FormField>
