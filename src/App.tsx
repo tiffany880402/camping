@@ -30,6 +30,52 @@ import { cn, formatCurrency } from './lib/utils';
 import { MOCK_TRIPS } from './constants';
 import { CampingTrip, GearItem } from './types';
 
+// --- Utilities ---
+
+const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800): Promise<string> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.onerror = () => resolve(base64Str); // Fallback to original if error
+  });
+};
+
+const safeLocalStorageSetItem = (key: string, value: string) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    if (e instanceof DOMException && (e.code === 22 || e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+      console.error('LocalStorage quota exceeded!');
+      // Optional: Clear some old data or inform user
+    } else {
+      console.error('LocalStorage setItem failed', e);
+    }
+  }
+};
+
 // --- Components ---
 
 const BackgroundMesh = () => (
@@ -101,7 +147,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose:
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-3 sm:p-6">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -114,7 +160,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose:
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-white rounded-t-[20px] sm:rounded-[20px] p-4 sm:p-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden"
+            className="relative w-full max-w-lg bg-white rounded-[24px] p-3 sm:p-8 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden"
           >
             <div className="w-12 h-1 bg-stone-100 rounded-full mb-6 mx-auto sm:hidden" />
             <div className="flex justify-between items-start mb-6">
@@ -129,7 +175,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose:
                 <Plus size={20} className="rotate-45" />
               </button>
             </div>
-            <div className="max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar pb-2">
+            <div className="max-h-[75vh] overflow-y-auto overflow-x-hidden pr-1.5 custom-scrollbar pb-6 text-stone-600">
               {children}
             </div>
           </motion.div>
@@ -323,8 +369,9 @@ const CampingPage = ({ trips, onAddTrip, onDeleteTrip }: { trips: CampingTrip[],
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result as string);
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setPhoto(compressed);
       };
       reader.readAsDataURL(file);
     }
@@ -1239,8 +1286,9 @@ const TripDetailPage = ({ trips, onUpdateTrip, onDeleteTrip }: { trips: CampingT
                       const file = e.target.files?.[0];
                       if (file) {
                         const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setEditData({ ...editData, photos: [reader.result as string] });
+                        reader.onloadend = async () => {
+                          const compressed = await compressImage(reader.result as string);
+                          setEditData({ ...editData, photos: [compressed] });
                         };
                         reader.readAsDataURL(file);
                       }
@@ -1699,15 +1747,16 @@ const SettingsPage = () => {
   const [tempNickname, setTempNickname] = useState(profile.nickname);
 
   useEffect(() => {
-    localStorage.setItem('user_profile', JSON.stringify(profile));
+    safeLocalStorageSetItem('user_profile', JSON.stringify(profile));
   }, [profile]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfile((prev: any) => ({ ...prev, avatar: reader.result }));
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setProfile((prev: any) => ({ ...prev, avatar: compressed }));
       };
       reader.readAsDataURL(file);
     }
@@ -1866,7 +1915,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem('camping_trips', JSON.stringify(trips));
+    safeLocalStorageSetItem('camping_trips', JSON.stringify(trips));
   }, [trips]);
 
   const handleAddTrip = (newTrip: CampingTrip) => {
