@@ -40,6 +40,47 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- 匯出資料：把這台手機裡的舊資料存成檔案，用來搬到新版。搬完可以刪掉這一段。 -->
+    <script>
+      (function () {
+        var KEY = 'camping_trips';
+        function ready(fn) { document.readyState !== 'loading' ? fn() : document.addEventListener('DOMContentLoaded', fn); }
+        ready(function () {
+          var raw = null;
+          try { raw = localStorage.getItem(KEY); } catch (e) {}
+          if (!raw) return;
+          var btn = document.createElement('button');
+          btn.textContent = '匯出資料';
+          btn.style.cssText = 'position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:9999;padding:9px 16px;border-radius:999px;border:0;background:#46544A;color:#fff;font:700 13px -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.22)';
+          btn.onclick = function () {
+            var trips = [];
+            try { trips = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+            var data = { app: 'camping-log', version: 1, exportedAt: new Date().toISOString(), trips: trips };
+            var text = JSON.stringify(data);
+            var name = 'camping-log-' + new Date().toISOString().slice(0, 10) + '.json';
+            var file = null;
+            try { file = new File([text], name, { type: 'application/json' }); } catch (e) {}
+            if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+              navigator.share({ files: [file], title: '露營日誌資料' }).catch(function () {});
+              return;
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(function () {
+                alert('已複製 ' + trips.length + ' 趟行程的資料。到新版按「從舊版露營日誌匯入資料」，貼上即可。');
+              }, function () { download(); });
+              return;
+            }
+            download();
+            function download() {
+              var a = document.createElement('a');
+              a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+              a.download = name; document.body.appendChild(a); a.click(); a.remove();
+            }
+          };
+          document.body.appendChild(btn);
+        });
+      })();
+    </script>
   </body>
 </html>
-
